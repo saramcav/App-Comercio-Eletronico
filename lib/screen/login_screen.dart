@@ -29,22 +29,22 @@ class _InitState extends State<LoginScreen> {
     controller = LoginController();
   }
 
-  mainRoute() {
+  mainRoute([User? user]) {
     Navigator.push(
       context, 
       MaterialPageRoute(
-        builder: (context) => const MainScreen()
+        builder: (context) => MainScreen(user)
       )
     );
   }
 
   void _submit() async {
     try{
-      User user = await controller.getLogin(_emailController.text, _passwordController.text);
-      if (user.id != -1) {
+      User? user = await controller.getLogin(_emailController.text, _passwordController.text);
+      if (user!=null) {
         savePref(1, user.email, user.password);
         _loginStatus = LoginStatus.signIn;
-        mainRoute();
+        mainRoute(user);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Usuário não encontrado! Cadastre-se!')),
@@ -284,7 +284,7 @@ class _InitState extends State<LoginScreen> {
 
                         GestureDetector(
                           onTap: () {
-                            //escreve a fncao ai
+                            mainRoute();
                           },
                           child: Container(
                             margin: const EdgeInsets.only(left: 20, right: 20, top: 20),

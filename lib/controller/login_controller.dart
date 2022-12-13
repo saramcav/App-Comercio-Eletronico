@@ -32,7 +32,7 @@ class LoginController {
     return res;
   }
 
-  Future<User> getLogin(String email, String password) async {
+  Future<User?> getLogin(String email, String password) async {
     var db = await con.db;
     String sql = """
     SELECT * FROM user WHERE email = '$email' AND password = '$password' """;
@@ -43,7 +43,7 @@ class LoginController {
       return User.fromMap(res.first);
     }
     
-    return User(id: -1, name: "", email: "", password: "");
+    return null;//User(id: -1, name: "", email: "", password: "");
   }
 
   Future<List<User>> getAllUser() async {
