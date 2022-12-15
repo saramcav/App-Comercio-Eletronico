@@ -37,7 +37,7 @@ class _InitState extends State<MainScreen> {
     final image = (await rootBundle.load("./images/windows.png"))
     .buffer.asUint8List();
 
-    final image1 = (await rootBundle.load("./images/abobra.jpg"))
+    final image1 = (await rootBundle.load("./images/abobora.jpg"))
     .buffer.asUint8List();
 
     Advertisement ad1=Advertisement("terreno do windows", "RJ", "terreno",
