@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:loja_app/screen/login_screen.dart';
 import 'package:loja_app/screen/sign_up_screen.dart';
@@ -5,6 +7,8 @@ import "dart:async";
 import '../helper/AdvertisementHelper.dart';
 import '../model/Advertisement.dart';
 import '../model/user.dart';
+import "dart:io";
+import 'package:flutter/services.dart';
 
 class MainScreen extends StatefulWidget {
 
@@ -21,11 +25,58 @@ class _InitState extends State<MainScreen> {
    
   TextEditingController _controllerTask = TextEditingController();
   List<Advertisement> ads=[];
-
+  Map<String, String> filters={
+    "state": "Todos",
+    "categ": "Todas"
+  };
   var _db= AdvertisementHelper();
 
+  List<String> states=[];
+  List<String> categories=[];
+
+//fessôr, essa aqui é pra testar tlgd
+  void _addSomeAds() async {
+    final image = (await rootBundle.load("./images/windows.png"))
+    .buffer.asUint8List();
+
+    final image1 = (await rootBundle.load("./images/abobra.jpg"))
+    .buffer.asUint8List();
+
+    Advertisement ad1=Advertisement("terreno do windows", "RJ", "terreno",
+    2000.0, "21971164461", "é o terreno do windows véi", image);
+
+    Advertisement ad2=Advertisement("Abobrinha brasileirinha", "Manaus", "legume",
+    1000000.0, "21971164461", "BRASIIIILLL", image1);
+
+    if(await _db.searchByTitle("terreno do windows"))
+      return;
+
+    await _db.insertAd(ad1);
+    await _db.insertAd(ad2);
+
+    _getAds();
+  }
+
   void _getAds() async {
-    List results = await _db.getAds();
+    List results=[];
+
+    print(filters);
+
+    if(filters.length==2 && !(["Todos", "None"].contains(filters["state"])) && 
+    !(["Todas", "None"].contains(filters["categ"])))
+      results = await _db.getFilteredAds(filters["state"]!, filters["categ"]!);
+
+    else if(!(["Todos", "None"].contains(filters["state"]))){
+      results = await _db.getFilteredAds(filters["state"]!);
+      print("aq");
+    }
+
+    else if(!(["Todas", "None"].contains(filters["categ"]!)))
+      results = await _db.getFilteredAds("",filters["categ"]!);
+
+    else
+      results = await _db.getAds();
+    
     ads.clear();
 
     for (var item in results) {
@@ -33,20 +84,25 @@ class _InitState extends State<MainScreen> {
       ads.add(ad);
     }
 
+    states = await _db.getColumn("state");
+    states.insert(0, "Todos");
+    categories = await _db.getColumn("category");
+    categories.insert(0, "Todas");
+
+    print(ads);
+
     setState(() {});
 
   }
 
   Widget listItemCreate(BuildContext context, int index) {
     Advertisement ad=ads[index];
-    String price=ad.price.toString();
+    Image img=ad.getImage(context);
 
-    return Row(children: [
-      ad.getImage(),
-      Column(children: [
-        Text(ad.title!),
-        Text("R\$$price")
-      ],)
+    return Column(children: [
+      img,
+      Text(ad.title!),
+      Text("R\$"+ad.price.toString())
     ],);
   }
 
@@ -57,11 +113,14 @@ class _InitState extends State<MainScreen> {
   }
 
   Widget createDropButton(List<String> options, String title){
-    String dropdownValue=options.first;
+    String tag="categ";
+
+    if(title=="Estados") tag="state";
+
     return Column(children: [
       Text(title),
       DropdownButton<String>(
-      value: dropdownValue,
+      value: filters[tag],
       icon: const Icon(Icons.arrow_downward),
       elevation: 16,
       alignment: Alignment.topCenter,
@@ -72,9 +131,8 @@ class _InitState extends State<MainScreen> {
       ),
       onChanged: (String? value) {
         // This is called when the user selects an item.
-        setState(() {
-          dropdownValue = value!;
-        });
+        filters[tag]=value!;
+        _getAds();
       },
       items: options.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
@@ -116,12 +174,12 @@ class _InitState extends State<MainScreen> {
             return [
                   PopupMenuItem<int>(
                       value: 0,
-                      child: Text("Logá"),
+                      child: Text("Logar"),
                   ),
 
                   PopupMenuItem<int>(
                       value: 1,
-                      child: Text("Cadastrá"),
+                      child: Text("Cadastrar"),
                   ),
               ];
           },
@@ -147,6 +205,8 @@ class _InitState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _addSomeAds();
+    _db.getColumn("state");
 
     return Scaffold(
       appBar: AppBar(
@@ -159,12 +219,15 @@ class _InitState extends State<MainScreen> {
       body: Column(children: [
         Row(
           children: [
-            Expanded(child: createDropButton(["Todos", "SP", "RJ", "GO", "AC"], "Estados")),
-            Expanded(child: createDropButton([ "Todas", "Carro", "telefone"], "Categorias"))
+            Expanded(child: createDropButton(states, "Estados")),
+            Expanded(child: createDropButton(categories, "Categorias"))
           ],
           mainAxisAlignment: MainAxisAlignment.center,
         ),
-
+        Expanded(child: ListView.builder(
+          itemCount: ads.length,
+          itemBuilder: listItemCreate
+        ))
     ]));
   }
 }

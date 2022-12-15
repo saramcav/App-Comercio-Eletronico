@@ -8,14 +8,12 @@ class Advertisement{
   String? title;
   String? state;
   String? category;  
-  Float? price;
+  double? price;
   String? telephone;
   String? description;
   Uint8List? photo;
 
-
-  Advertisement(this.title, this.state, this.category, this.telephone, this.description, this.photo);
-
+  Advertisement(this.title, this.state, this.category,this.price, this.telephone, this.description, this.photo);
 
   Advertisement.fromMap(Map map) {
     this.id = map["id"];
@@ -44,7 +42,8 @@ class Advertisement{
     return map;
   }  
 
-  Image getImage(){
-    return Image.memory(this.photo!);
+  Image getImage(context){
+    final width=MediaQuery.of(context).size.width;
+    return Image.memory(this.photo!, width: width*0.9);
   }
 }

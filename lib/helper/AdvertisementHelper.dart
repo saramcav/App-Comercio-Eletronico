@@ -64,9 +64,47 @@ class AdvertisementHelper{
     var database = await db;
 
     String sql = "SELECT * FROM $tableName";
-    List advertisements = await database!.rawQuery(sql);
+    List advertisements = await database.rawQuery(sql);
 
     return advertisements;
+  }
+
+  getFilteredAds([String state="", String categ=""]) async {
+    var database = await db;
+
+    String sql="";
+
+    if(state!="" && categ !="")
+      sql = "SELECT * FROM $tableName WHERE state=\"$state\" AND category=\"$categ\"";
+    else if(state!="")
+      sql = "SELECT * FROM $tableName WHERE state=\"$state\"";
+    else if(categ!="")
+      sql = "SELECT * FROM $tableName WHERE category=\"$categ\"";
+      
+    List advertisements = await database.rawQuery(sql);
+
+    return advertisements;
+  }
+
+  Future<List<String>> getColumn(String column) async {
+    var database = await db;
+
+    String sql = "SELECT $column FROM $tableName";
+    List columnList = await database.rawQuery(sql);
+    List<String> values=[];
+
+    for(Map item in columnList) {values.add(item[column]);}
+    
+    return values;
+  }
+
+  Future<bool> searchByTitle(String title) async {
+    var database = await db;
+
+    String sql = "SELECT * FROM $tableName WHERE title=\"$title\"";
+    final ad = await database!.rawQuery(sql);
+
+    return ad.length!=0;
   }
   
 
