@@ -75,11 +75,11 @@ class AdvertisementHelper{
     String sql="";
 
     if(state!="" && categ !="")
-      sql = "SELECT * FROM $tableName WHERE state=\"$state\" AND category=\"$categ\"";
+      {sql = "SELECT * FROM $tableName WHERE state=\"$state\" AND category=\"$categ\"";}
     else if(state!="")
-      sql = "SELECT * FROM $tableName WHERE state=\"$state\"";
+      {sql = "SELECT * FROM $tableName WHERE state=\"$state\"";}
     else if(categ!="")
-      sql = "SELECT * FROM $tableName WHERE category=\"$categ\"";
+      {sql = "SELECT * FROM $tableName WHERE category=\"$categ\"";}
       
     List advertisements = await database.rawQuery(sql);
 
@@ -102,7 +102,7 @@ class AdvertisementHelper{
     var database = await db;
 
     String sql = "SELECT * FROM $tableName WHERE title=\"$title\"";
-    final ad = await database!.rawQuery(sql);
+    final ad = await database.rawQuery(sql);
 
     return ad.length!=0;
   }
@@ -111,7 +111,7 @@ class AdvertisementHelper{
   Future<int> deleteAd(int id) async {
     var database = await db;
 
-    int result = await database!.delete(
+    int result = await database.delete(
       tableName,
       where: "id = ?",
       whereArgs: [id]
@@ -123,7 +123,7 @@ class AdvertisementHelper{
   Future<int> updateAd(Advertisement advertisement) async {
     var database = await db;
 
-    int result = await database!.update(
+    int result = await database.update(
       tableName,
       advertisement.toMap(),
       where: "id = ?",

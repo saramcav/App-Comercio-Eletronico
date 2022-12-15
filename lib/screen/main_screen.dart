@@ -1,13 +1,10 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:loja_app/screen/login_screen.dart';
 import 'package:loja_app/screen/sign_up_screen.dart';
-import "dart:async";
+import 'package:loja_app/screen/description_screen.dart';
 import '../helper/AdvertisementHelper.dart';
 import '../model/Advertisement.dart';
 import '../model/user.dart';
-import "dart:io";
 import 'package:flutter/services.dart';
 
 class MainScreen extends StatefulWidget {
@@ -23,7 +20,8 @@ class MainScreen extends StatefulWidget {
 
 class _InitState extends State<MainScreen> {
    
-  TextEditingController _controllerTask = TextEditingController();
+  //TextEditingController _controllerTask = TextEditingController();
+  
   List<Advertisement> ads=[];
   Map<String, String> filters={
     "state": "Todos",
@@ -49,7 +47,7 @@ class _InitState extends State<MainScreen> {
     1000000.0, "21971164461", "BRASIIIILLL", image1);
 
     if(await _db.searchByTitle("terreno do windows"))
-      return;
+      {return;}
 
     await _db.insertAd(ad1);
     await _db.insertAd(ad2);
@@ -64,18 +62,16 @@ class _InitState extends State<MainScreen> {
 
     if(filters.length==2 && !(["Todos", "None"].contains(filters["state"])) && 
     !(["Todas", "None"].contains(filters["categ"])))
-      results = await _db.getFilteredAds(filters["state"]!, filters["categ"]!);
+      {results = await _db.getFilteredAds(filters["state"]!, filters["categ"]!);}
 
-    else if(!(["Todos", "None"].contains(filters["state"]))){
-      results = await _db.getFilteredAds(filters["state"]!);
-      print("aq");
-    }
+    else if(!(["Todos", "None"].contains(filters["state"])))
+      {results = await _db.getFilteredAds(filters["state"]!);}
 
     else if(!(["Todas", "None"].contains(filters["categ"]!)))
-      results = await _db.getFilteredAds("",filters["categ"]!);
+      {results = await _db.getFilteredAds("",filters["categ"]!);}
 
     else
-      results = await _db.getAds();
+      {results = await _db.getAds();}
     
     ads.clear();
 
@@ -99,11 +95,43 @@ class _InitState extends State<MainScreen> {
     Advertisement ad=ads[index];
     Image img=ad.getImage(context);
 
-    return Column(children: [
-      img,
-      Text(ad.title!),
-      Text("R\$"+ad.price.toString())
-    ],);
+    return GestureDetector(
+      onTap: () => descriptionRoute(),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10), 
+        ),
+        shadowColor: Colors.purple.shade200,
+        elevation: 5,
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        child: Column(
+          children: [
+            Image(
+              image: img.image, 
+              fit: BoxFit.cover, 
+              width: MediaQuery.of(context).size.width, 
+              height: MediaQuery.of(context).size.width*0.5,
+            ),
+            const SizedBox(height: 7,),
+            Text(
+              ad.title!,
+              style: const TextStyle(
+                fontWeight: FontWeight.w400
+              ),
+            ),
+            const SizedBox(height: 7,),
+            Text(
+              "R\$"+ad.price.toString(),
+              style: TextStyle(
+                color: Colors.purple.shade800, 
+                fontWeight: FontWeight.bold
+              ),
+            ),
+            const SizedBox(height: 7,),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -117,30 +145,32 @@ class _InitState extends State<MainScreen> {
 
     if(title=="Estados") tag="state";
 
-    return Column(children: [
-      Text(title),
-      DropdownButton<String>(
-      value: filters[tag],
-      icon: const Icon(Icons.arrow_downward),
-      elevation: 16,
-      alignment: Alignment.topCenter,
-      style: const TextStyle(color: Colors.deepPurple),
-      underline: Container(
-        height: 2,
-        color: Colors.deepPurpleAccent,
-      ),
-      onChanged: (String? value) {
-        // This is called when the user selects an item.
-        filters[tag]=value!;
-        _getAds();
-      },
-      items: options.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),)
-      ]);
+    return Container(
+      padding: const EdgeInsets.only(left: 25.0, right: 20.0),
+      child: Row(
+        children: [
+          Text(title),
+          const SizedBox(width: 10,),
+          DropdownButton<String>(
+            value: filters[tag],
+            icon: const Icon(Icons.arrow_downward),
+            elevation: 16,
+            alignment: Alignment.topCenter,
+            style: const TextStyle(color: Colors.deepPurple),
+            onChanged: (String? value) {
+              filters[tag]=value!;
+              _getAds();
+            },
+            items: options.map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+          ),
+        ],
+      ),    
+    );
   }
 
   Widget menu(){
@@ -150,12 +180,18 @@ class _InitState extends State<MainScreen> {
             return [
                   PopupMenuItem<int>(
                       value: 0,
-                      child: Text("Meus anúncios"),
+                      child: ListTile(
+                        leading: Icon(Icons.visibility, color: Colors.purple.shade800,),
+                        title: const Text("Meus Anúncios"),
+                      ),
                   ),
 
                   PopupMenuItem<int>(
                       value: 1,
-                      child: Text("Deslogar"),
+                      child: ListTile(
+                        leading: Icon(Icons.logout, color: Colors.purple.shade800,),
+                        title: const Text("Deslogar"),
+                      ),
                   ),
               ];
           },
@@ -172,12 +208,12 @@ class _InitState extends State<MainScreen> {
     return PopupMenuButton(
           itemBuilder: (context){
             return [
-                  PopupMenuItem<int>(
+                  const PopupMenuItem<int>(
                       value: 0,
                       child: Text("Logar"),
                   ),
 
-                  PopupMenuItem<int>(
+                  const PopupMenuItem<int>(
                       value: 1,
                       child: Text("Cadastrar"),
                   ),
@@ -188,19 +224,28 @@ class _InitState extends State<MainScreen> {
               Navigator.push(
                 context, 
                 MaterialPageRoute(
-                  builder: (context) => LoginScreen()
+                  builder: (context) => const LoginScreen()
                   )
               );
-            }else if(value == 1){
+            } else if(value == 1){
               Navigator.push(
                 context, 
                 MaterialPageRoute(
-                  builder: (context) => SignUpScreen()
+                  builder: (context) => const SignUpScreen()
                   )
               );
             }
           }
-        );;
+        );
+  }
+
+  descriptionRoute([Advertisement? advertisement]) {
+    Navigator.push(
+      context, 
+      MaterialPageRoute(
+        builder: (context) => DescriptionScreen(advertisement),
+      )
+    );
   }
 
   @override
@@ -210,24 +255,45 @@ class _InitState extends State<MainScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Lista de olx"),
-        backgroundColor: Color.fromARGB(255, 122, 33, 163),
+        title: const Text(
+          "OLX",
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+            fontWeight: FontWeight.w300,
+          ),
+        ),
+        backgroundColor: Colors.purple.shade700,
         actions: [
           menu()
         ],
       ),
-      body: Column(children: [
-        Row(
-          children: [
-            Expanded(child: createDropButton(states, "Estados")),
-            Expanded(child: createDropButton(categories, "Categorias"))
-          ],
-          mainAxisAlignment: MainAxisAlignment.center,
-        ),
-        Expanded(child: ListView.builder(
-          itemCount: ads.length,
-          itemBuilder: listItemCreate
-        ))
-    ]));
+      body: Column(
+        children: [
+          IntrinsicHeight(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(child: createDropButton(states, "Estados")),
+                VerticalDivider(color: Colors.purple.shade800, thickness: 1.5, width: 0,),
+                Expanded(child: createDropButton(categories, "Categorias"))
+              ],  
+            ),
+          ),
+          Divider(color: Colors.purple.shade800, height: 0,thickness: 1,),
+          Container(
+            padding: const EdgeInsets.all(10.0),
+            child: Expanded(
+              child: ListView.separated(
+                separatorBuilder: (BuildContext context, int index) => const Divider(),
+                shrinkWrap: true,
+                itemCount: ads.length,
+                itemBuilder: listItemCreate
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

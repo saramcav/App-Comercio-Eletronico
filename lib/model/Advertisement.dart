@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -43,7 +42,6 @@ class Advertisement{
   }  
 
   Image getImage(context){
-    final width=MediaQuery.of(context).size.width;
-    return Image.memory(this.photo!, width: width*0.9);
+    return Image.memory(photo!);
   }
 }
