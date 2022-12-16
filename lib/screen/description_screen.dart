@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loja_app/model/Advertisement.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DescriptionScreen extends StatefulWidget {
 
@@ -12,7 +13,6 @@ class DescriptionScreen extends StatefulWidget {
 
 }
 
-
 //essa pagina recebe um Advertisement como parametro em seu construtor
 //a partir do widget, sao acessados seus atributos para que sejam exibidos na tela 
 class _InitState extends State<DescriptionScreen> {
@@ -21,6 +21,19 @@ class _InitState extends State<DescriptionScreen> {
   void initState() {
     super.initState();
   }
+
+  //tenta integrar o telefone
+  /*launchApp(String url, BuildContext context) async {
+    await canLaunch(url)? await launch(url) : showDialog(
+      context: context, 
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Alerta!"),
+          content: Text("Não foi possível encontrar um aplicativo compatível!"),
+        );
+      }
+    );
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -238,7 +251,7 @@ class _InitState extends State<DescriptionScreen> {
             height: 20.0,
           ),
           GestureDetector(
-                  onTap: () async => print("clicou"), 
+                  onTap: () async => launchUrl(Uri(scheme: 'tel', path: '${widget.advertisement.telephone}')),
                   child: Container(
                     margin: const EdgeInsets.only(left: 20, right: 20, top: 40),
                     padding: const EdgeInsets.only(left: 20, right: 20),
