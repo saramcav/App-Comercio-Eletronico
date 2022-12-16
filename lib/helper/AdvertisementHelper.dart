@@ -87,8 +87,6 @@ class AdvertisementHelper{
 
     }
 
-    print(sql);
-
     List advertisements = await database.rawQuery(sql);
 
     return advertisements;
