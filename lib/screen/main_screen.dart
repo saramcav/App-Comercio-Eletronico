@@ -34,13 +34,8 @@ class _InitState extends State<MainScreen> {
 
   bool initialized=false;
 
-<<<<<<< HEAD
   //funcao para que insere anuncios para que a tela principal nao esteja vazia assim que iniciar
   void _addSomeAds() async {
-=======
-//Função que adiciona alguns anúncios só para não ficar vazio inicialmente
-  void _addSomeAds() async{
->>>>>>> c54c9fe4fe5ca422be7968904936c05f630fda18
     _db.deleteAds();
 
     final  json = jsonDecode(await DefaultAssetBundle.of(context)
@@ -114,6 +109,10 @@ class _InitState extends State<MainScreen> {
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10), 
+          side: BorderSide(
+            color: Colors.grey.shade700, 
+            width: 0.5,
+          ),
         ),
         shadowColor: Colors.purple.shade200,
         elevation: 5,
@@ -161,7 +160,6 @@ class _InitState extends State<MainScreen> {
     if(title=="Estados") tag="state";
 
     return Container(
-      padding: const EdgeInsets.only(left: 15, right: 15),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors:  [Colors.purple.shade400, Colors.purple.shade600],
@@ -170,18 +168,18 @@ class _InitState extends State<MainScreen> {
         ),
         borderRadius: BorderRadius.circular(50),
         boxShadow: [BoxShadow(
-          offset: const Offset(0, 10),
+          offset: const Offset(0, 5),
           blurRadius: 50,
           color: Colors.purple.shade300
         )],
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text(
             title, 
             style: TextStyle(color: Colors.white),
           ),
-          const SizedBox(width: 10,),
           Theme(
             data: Theme.of(context).copyWith(
               canvasColor: Colors.purple.shade200,
@@ -325,7 +323,8 @@ class _InitState extends State<MainScreen> {
       body: Stack(
         children: [
           Positioned(
-            child:Container(
+            child: Container(
+              padding: EdgeInsets.all(10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -334,9 +333,9 @@ class _InitState extends State<MainScreen> {
                 Expanded(child: createDropButton(categories, "Categorias"))
               ],  
             ),
-          )),
+          ),),
           Container(
-            padding: const EdgeInsets.fromLTRB(10.0,50.0,10.0,10.0),
+            padding: const EdgeInsets.fromLTRB(10.0, 65.0,10.0,10.0),
             child: ListView.separated(
               separatorBuilder: (BuildContext context, int index) => const Divider(),
               shrinkWrap: true,

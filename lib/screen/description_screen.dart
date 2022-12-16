@@ -210,7 +210,7 @@ class _InitState extends State<DescriptionScreen> {
 
           //caixa que contem a descricao do anuncio
           Container(
-            padding: const EdgeInsets.only(left: 40, right: 40, top: 30),
+            padding: const EdgeInsets.only(left: 35, right: 35, top: 30),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
