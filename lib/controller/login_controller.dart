@@ -5,13 +5,14 @@ import '../model/user.dart';
 class LoginController {
   UserHelper con = UserHelper();
 
-
+  //salba a instancia de usuario no bd
   Future<int> saveUser(User user) async {
     var db = await con.db;
     int res = await db.insert('user', user.toMap());
     return res;
   }
   
+  //retorna se ja existe o email inserido no cadastro no bd
   Future<bool> dbContainsEmail(String email) async {
     var db = await con.db;
     String sql = """
@@ -25,13 +26,8 @@ class LoginController {
       return false;
     }
   }
-  
-  Future<int> deleteUser(User user) async {
-    var db = await con.db;
-    int res = await db.delete("user", where: "id = ?", whereArgs: [user.id]);
-    return res;
-  }
 
+  //retorna o usuario relacionado a email e a senha submetidos
   Future<User?> getLogin(String email, String password) async {
     var db = await con.db;
     String sql = """
@@ -46,6 +42,7 @@ class LoginController {
     return null;//User(id: -1, name: "", email: "", password: "");
   }
 
+  //retorna a lista de todos usuarios
   Future<List<User>> getAllUser() async {
     var db = await con.db;
     

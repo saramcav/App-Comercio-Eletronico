@@ -30,7 +30,7 @@ class _InitState extends State<LoginScreen> {
 
   //funcao de mudanca de tela
   mainRoute([User? user]) {
-    Navigator.pushReplacement(
+    Navigator.push(
       context, 
       MaterialPageRoute(
         builder: (context) => MainScreen(user)
@@ -44,7 +44,7 @@ class _InitState extends State<LoginScreen> {
   void _submit() async {
     try{
       User? user = await controller.getLogin(_emailController.text, _passwordController.text);
-      if (user!=null) {
+      if (user != null) {
         mainRoute(user);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(

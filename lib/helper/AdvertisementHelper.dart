@@ -61,7 +61,7 @@ class AdvertisementHelper{
 
   }
 
- deleteAds() async {
+  deleteAds() async {
     var database = await db;
 
     String sql = "DELETE FROM $tableName";

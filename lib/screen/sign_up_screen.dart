@@ -13,6 +13,9 @@ class SignUpScreen extends StatefulWidget {
 
 }
 
+//essa tela possui campos centrais em que a pessoa cadastra nome, email e senha 
+//existe tambem um controlador de senha que verifica se a senha inserida atende aos requisitos espfificados
+//abaixo, existe um botao de cadastro, que salva os dados no banco e redireciona para tela de login
 class _InitState extends State <SignUpScreen> {
   late LoginController controller;
   final TextEditingController _nameController = TextEditingController();
@@ -23,8 +26,10 @@ class _InitState extends State <SignUpScreen> {
   bool validPassword = false;
   bool isEmail(String email) => EmailValidator.validate(email);
 
+  //verifica se os campos de cadastro foram preenchidos corretamente
   void validateInput() async {
     if(_nameController.text.isNotEmpty && _passwordController.text.isNotEmpty && _emailController.text.isNotEmpty) {
+      //verificando email
       if(isEmail(_emailController.text)) {
         if(validPassword) {
           _insertNewUser();
@@ -34,6 +39,7 @@ class _InitState extends State <SignUpScreen> {
           );
         } 
       } else {
+        //limpando controller para receber um email novo
         _emailController.clear();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Insira um email válido para se cadastrar!')),
@@ -47,6 +53,7 @@ class _InitState extends State <SignUpScreen> {
     }
   }
 
+  //essa funcao instancia um user, guarda seus dados no bd e redireciona para a tela de login
   void _insertNewUser() async {
     List<User> users;
     List listUsers = [];
@@ -60,13 +67,16 @@ class _InitState extends State <SignUpScreen> {
       );
       _nameController.clear();
       _emailController.clear();
-      //_passwordController.clear();
+      _passwordController.clear();
       loginRoute();
 
     } else {
       _emailController.clear();
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Email já cadastrado! Insira um novo email!')));
+        const SnackBar(
+          content: Text('Email já cadastrado! Insira um novo email!')
+        )
+      );
     }
     
     //printando usuarios
@@ -76,6 +86,7 @@ class _InitState extends State <SignUpScreen> {
     
   }
 
+  //funcao de mudanca de tela
   loginRoute() {
     Navigator.push(
       context, 
@@ -85,6 +96,7 @@ class _InitState extends State <SignUpScreen> {
     );
   }
 
+  //instanciando controller
   _InitState() {
     controller = LoginController();
   }
@@ -99,6 +111,8 @@ class _InitState extends State <SignUpScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            
+            //caixa roxa que contem o logo e o nome do aplicativo
             Container(
               height: 250,
               decoration: BoxDecoration(
@@ -140,6 +154,7 @@ class _InitState extends State <SignUpScreen> {
               ),
             ),
 
+            //campo para a insercao do nome
             Container(
               margin: const EdgeInsets.only(left: 20, right: 20, top: 70),
               padding: const EdgeInsets.only(left: 20, right: 20),
@@ -168,6 +183,7 @@ class _InitState extends State <SignUpScreen> {
               ),
             ),
 
+            //campo para a insercao do email
             Container(
               margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
               padding: const EdgeInsets.only(left: 20, right: 20),
@@ -196,6 +212,7 @@ class _InitState extends State <SignUpScreen> {
               ),
             ),
 
+            //campo para a insercao da senha
             Container(
               margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
               padding: const EdgeInsets.only(left: 20, right: 20),
@@ -225,6 +242,7 @@ class _InitState extends State <SignUpScreen> {
               ),
             ),
 
+            //verificador de requisitos da senha
             FlutterPwValidator(
               key: validatorKey,
               controller: _passwordController,
@@ -241,6 +259,7 @@ class _InitState extends State <SignUpScreen> {
               },
             ),
 
+            //botao para submissao da tentativa de cadastro
             GestureDetector(
               onTap: () async => validateInput(),
               child: Container(
@@ -269,7 +288,7 @@ class _InitState extends State <SignUpScreen> {
                 ),
               ),
             ),
-          ]
+          ],
         ),
       ),
     );

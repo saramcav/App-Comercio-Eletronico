@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -54,7 +53,7 @@ class _InitState extends State<MyAds> {
     Advertisement nova = Advertisement(_titleController.text, _stateController.text, _categoryController.text,
     double.parse(_priceController.text), _telephoneController.text, _descriptionController.text,"", img_bytes);
     
-    int result= await _db.insertAd(nova);
+    int result = await _db.insertAd(nova);
   
     _getAds();
   }
@@ -73,7 +72,7 @@ class _InitState extends State<MyAds> {
     ads[index].price = double.parse(_priceController.text);
     ads[index].telephone = _telephoneController.text;
     ads[index].description = _descriptionController.text;
-    ads[index].photo = image==null? defaultImg: await image!.readAsBytes();
+    ads[index].photo = image == null? defaultImg : await image!.readAsBytes();
     
     await _db.updateAd(ads[index]);
 
@@ -325,9 +324,10 @@ class _InitState extends State<MyAds> {
             ]),
             ),
             const SizedBox(height: 7,),
-            ],),
+          ],
         ),
-      );
+      ),
+    );
   }
 
   @override
@@ -349,16 +349,16 @@ class _InitState extends State<MyAds> {
         child: Icon(Icons.add),
         backgroundColor: Colors.purple,
         onPressed: () => _pop_up(-1, false)
-          ),
-          body: 
-            Container(
-              padding: const EdgeInsets.all(10.0),
-              child: ListView.separated(
-                  separatorBuilder: (BuildContext context, int index) => const Divider(),
-                  shrinkWrap: true,
-                  itemCount: ads.length,
-                  itemBuilder: listItemCreate
-              ),
-            )
-          );
-}}
+      ),
+      body: Container(
+        padding: const EdgeInsets.all(10.0),
+        child: ListView.separated(
+          separatorBuilder: (BuildContext context, int index) => const Divider(),
+          shrinkWrap: true,
+          itemCount: ads.length,
+          itemBuilder: listItemCreate
+        ),
+      ),
+    );
+  }
+}

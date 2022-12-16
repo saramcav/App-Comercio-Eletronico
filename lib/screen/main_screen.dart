@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:loja_app/screen/login_screen.dart';
 import 'package:loja_app/screen/sign_up_screen.dart';
@@ -23,23 +22,23 @@ class MainScreen extends StatefulWidget {
 
 class _InitState extends State<MainScreen> {
   
-  List<Advertisement> ads=[];
-  Map<String, String> filters={
+  List<Advertisement> ads = [];
+  Map<String, String> filters = {
     "state": "Todos",
     "categ": "Todas"
   };
   var _db= AdvertisementHelper();
 
-  List<String> states=[];
-  List<String> categories=[];
+  List<String> states = [];
+  List<String> categories = [];
 
   bool initialized=false;
 
-//fessôr, essa aqui é pra testar tlgd
-  void _addSomeAds() async{
+  //funcao para que insere anuncios para que a tela principal nao esteja vazia assim que iniciar
+  void _addSomeAds() async {
     _db.deleteAds();
 
-    final  json=jsonDecode(await DefaultAssetBundle.of(context)
+    final  json = jsonDecode(await DefaultAssetBundle.of(context)
       .loadString("lib/initial_advertisements.json"));
 
     for(Map ad in json["advertisements:"]){
@@ -48,9 +47,9 @@ class _InitState extends State<MainScreen> {
 
       ad["photo"] = (await rootBundle.load(ad["photo"]))
         .buffer.asUint8List();
-      ad["id"]=null;
+      ad["id"] = null;
 
-      Advertisement atual=Advertisement.fromMap(ad);
+      Advertisement atual = Advertisement.fromMap(ad);
 
       await _db.insertAd(atual);
     }
@@ -59,26 +58,26 @@ class _InitState extends State<MainScreen> {
   }
 
   void _getAds() async {
-    List results=[];
+    List results = [];
 
-    if(filters.length==2 && !(["Todos", "None"].contains(filters["state"])) && 
+    if(filters.length == 2 && !(["Todos", "None"].contains(filters["state"])) && 
     !(["Todas", "None"].contains(filters["categ"]))){
       results = await _db.getAds({
-        "state":filters["state"],
-        "category":filters["categ"]
+        "state" : filters["state"],
+        "category" : filters["categ"]
       });
     }
 
     else if(!(["Todos", "None"].contains(filters["state"]))){
       print(filters[0]);
       results = await _db.getAds({
-        "state" :filters["state"]
+        "state" : filters["state"]
       });
     }
 
     else if(!(["Todas", "None"].contains(filters["categ"]!))){
       results = await _db.getAds({
-        "category":filters["categ"]
+        "category" : filters["categ"]
       });
     }
 
@@ -102,8 +101,8 @@ class _InitState extends State<MainScreen> {
   }
 
   Widget listItemCreate(BuildContext context, int index) {
-    Advertisement ad=ads[index];
-    Image img=ad.getImage(context);
+    Advertisement ad = ads[index];
+    Image img = ad.getImage(context);
 
     return GestureDetector(
       onTap: () => descriptionRoute(ad),
@@ -172,30 +171,35 @@ class _InitState extends State<MainScreen> {
       ),
       child: Row(
         children: [
-          Text(title, style: TextStyle(color: Colors.white),),
+          Text(
+            title, 
+            style: TextStyle(color: Colors.white),
+          ),
           const SizedBox(width: 10,),
           Theme(
-                  data: Theme.of(context).copyWith(
-                    canvasColor: Colors.purple.shade200,
+            data: Theme.of(context).copyWith(
+              canvasColor: Colors.purple.shade200,
+            ),
+            child: DropdownButton<String>(
+              borderRadius:BorderRadius.circular(10),
+              value: filters[tag],
+              icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white,),
+              elevation: 16,
+              alignment: Alignment.topCenter,
+              style: const TextStyle(color: Colors.deepPurple),
+              onChanged: (String? value) {
+                filters[tag]=value!;
+                _getAds();
+              },
+              items: options.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value, style: TextStyle(color: Colors.white),
                   ),
-                  child: DropdownButton<String>(
-            borderRadius:BorderRadius.circular(10),
-            value: filters[tag],
-            icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white,),
-            elevation: 16,
-            alignment: Alignment.topCenter,
-            style: const TextStyle(color: Colors.deepPurple),
-            onChanged: (String? value) {
-              filters[tag]=value!;
-              _getAds();
-            },
-            items: options.map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value, style: TextStyle(color: Colors.white),),
-              );
-            }).toList(),
-          ),),
+                );
+              }).toList(),
+            ),
+          ),
         ],
       ),    
     );
@@ -204,79 +208,79 @@ class _InitState extends State<MainScreen> {
   Widget menu(){
     if(widget.user!=null){
       return PopupMenuButton(
-          itemBuilder: (context){
-            return [
-                  PopupMenuItem<int>(
-                      value: 0,
-                      child: ListTile(
-                        leading: Icon(Icons.visibility, color: Colors.purple.shade800,),
-                        title: const Text("Meus Anúncios"),
-                      ),
-                  ),
+        itemBuilder: (context){
+          return [
+            PopupMenuItem<int>(
+              value: 0,
+              child: ListTile(
+                leading: Icon(Icons.visibility, color: Colors.purple.shade800,),
+                title: const Text("Meus Anúncios"),
+              ),
+            ),
 
-                  PopupMenuItem<int>(
-                      value: 1,
-                      child: ListTile(
-                        leading: Icon(Icons.logout, color: Colors.purple.shade800,),
-                        title: const Text("Deslogar"),
-                      ),
-                  ),
-              ];
-          },
-          onSelected:(value){
-            if(value == 0){
-              Navigator.push(
-                context, 
-                MaterialPageRoute(
-                  builder: (context) => MyAds(widget.user),
-                )
-              );
+            PopupMenuItem<int>(
+              value: 1,
+              child: ListTile(
+                leading: Icon(Icons.logout, color: Colors.purple.shade800,),
+                title: const Text("Deslogar"),
+              ),
+            ),
+         ];
+        },
+        onSelected:(value){
+          if(value == 0){
+            Navigator.push(
+              context, 
+              MaterialPageRoute(
+                builder: (context) => MyAds(widget.user),
+              )
+            );
                 //ir pro meus alucio
-            }else if(value == 1){
-                widget.user=null;
-                setState(() {});
-            }
+          } else if(value == 1){
+            widget.user=null;
+            setState(() {});
           }
-        );
+        }
+      );
     }
     return PopupMenuButton(
-          itemBuilder: (context){
-            return [
-                  PopupMenuItem<int>(
-                      value: 0,
-                      child: ListTile(
-                        leading: Icon(Icons.login, color: Colors.purple.shade800,),
-                        title: const Text("Logar"),
-                      ),
-                  ),
+      itemBuilder: (context) {
+        return [
+          PopupMenuItem<int>(
+            value: 0,
+            child: ListTile(
+              leading: Icon(Icons.login, color: Colors.purple.shade800,),
+              title: const Text("Logar"),
+            ),
+          ),
 
-                  PopupMenuItem<int>(
-                      value: 1,
-                      child: ListTile(
-                        leading: Icon(Icons.person, color: Colors.purple.shade800,),
-                        title: const Text("Cadastrar"),
-                      ),
-                  ),
-              ];
-          },
-          onSelected:(value){
-            if(value == 0){
-              Navigator.push(
-                context, 
-                MaterialPageRoute(
-                  builder: (context) => const LoginScreen()
-                  )
-              );
-            } else if(value == 1){
-              Navigator.push(
-                context, 
-                MaterialPageRoute(
-                  builder: (context) => const SignUpScreen()
-                  )
-              );
-            }
-          }
-        );
+          PopupMenuItem<int>(
+            value: 1,
+            child: ListTile(
+              leading: Icon(Icons.person, color: Colors.purple.shade800,),
+              title: const Text("Cadastrar"),
+            ),
+          ),
+        ];
+      },
+      onSelected:(value) {
+        if(value == 0) {
+          Navigator.push(
+            context, 
+            MaterialPageRoute(
+              builder: (context) => const LoginScreen()
+            )
+          );
+        } else if(value == 1){
+          Navigator.push(
+            context, 
+            MaterialPageRoute(
+              builder: (context) => const SignUpScreen()
+            )
+          );
+        }
+      }
+    );
   }
 
   //funcao de mudanca de tela
@@ -328,13 +332,13 @@ class _InitState extends State<MainScreen> {
           Container(
             padding: const EdgeInsets.fromLTRB(10.0,50.0,10.0,10.0),
             child: ListView.separated(
-                separatorBuilder: (BuildContext context, int index) => const Divider(),
-                shrinkWrap: true,
-                physics: ScrollPhysics(),
-                itemCount: ads.length,
-                itemBuilder: listItemCreate
-              ),
+              separatorBuilder: (BuildContext context, int index) => const Divider(),
+              shrinkWrap: true,
+              physics: ScrollPhysics(),
+              itemCount: ads.length,
+              itemBuilder: listItemCreate
             ),
+          ),
         ],
       ),
     );
