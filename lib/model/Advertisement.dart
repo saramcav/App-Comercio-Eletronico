@@ -13,7 +13,7 @@ class Advertisement{
   String? author;
   Uint8List? photo;
 
-  Advertisement(this.title, this.state, this.category,this.price, this.telephone, this.description, this.photo);
+  Advertisement(this.title, this.state, this.category,this.price, this.telephone, this.description, this.author, this.photo);
 
   Advertisement.fromMap(Map map) {
     this.id = map["id"];
@@ -23,6 +23,7 @@ class Advertisement{
     this.price = map["price"];
     this.telephone = map["telephone"];
     this.description = map["description"];
+    this.author = map["author"];
     this.photo = map["photo"];
   }
 
@@ -34,6 +35,7 @@ class Advertisement{
       "price": this.price,
       "telephone": this.telephone,
       "description": this.description,
+      "author": this.author,
       "photo": this.photo
     };
     

@@ -73,6 +73,7 @@ flutter:
     - images/brocolis.png
     - images/pinguin.png
     - images/cenoura.png
+    - images/noimage.png
     - lib/initial_advertisements.json
     #- lib/initial_advertisements.json
   #   - images/a_dot_ham.jpeg

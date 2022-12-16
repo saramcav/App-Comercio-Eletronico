@@ -30,6 +30,7 @@ class AdvertisementHelper{
         price REAL NOT NULL,
         telephone VARCHAR(20) NOT NULL,
         description TEXT NOT NULL,
+        author TEXT NOT NULL,
         photo BLOB
       );
     """;

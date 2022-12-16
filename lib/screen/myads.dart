@@ -1,10 +1,11 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:loja_app/model/Advertisement.dart';
 import 'package:loja_app/model/user.dart';
 import 'package:loja_app/helper/AdvertisementHelper.dart';
-import 'package:loja_app/screen/description_screen.dart';
+import 'package:loja_app/screen/description_screen.dart'; 
 
 class MyAds extends StatefulWidget {
 
@@ -22,6 +23,7 @@ class _InitState extends State<MyAds> {
   var _db= AdvertisementHelper();
 
   XFile? image;
+  Uint8List? defaultImg;
 
   final TextEditingController _stateController = TextEditingController();
   final TextEditingController _categoryController = TextEditingController();
@@ -47,11 +49,10 @@ class _InitState extends State<MyAds> {
   }
 
   void _saveAd() async {
-
-    Uint8List img_bytes = await image!.readAsBytes();
+    Uint8List? img_bytes = image==null? defaultImg: await image!.readAsBytes();
 
     Advertisement nova = Advertisement(_titleController.text, _stateController.text, _categoryController.text,
-    double.parse(_priceController.text), _telephoneController.text, _descriptionController.text, img_bytes);
+    double.parse(_priceController.text), _telephoneController.text, _descriptionController.text,"", img_bytes);
     
     int result= await _db.insertAd(nova);
   
@@ -72,7 +73,7 @@ class _InitState extends State<MyAds> {
     ads[index].price = double.parse(_priceController.text);
     ads[index].telephone = _telephoneController.text;
     ads[index].description = _descriptionController.text;
-    ads[index].photo = await image!.readAsBytes();
+    ads[index].photo = image==null? defaultImg: await image!.readAsBytes();
     
     await _db.updateAd(ads[index]);
 
@@ -97,6 +98,8 @@ class _InitState extends State<MyAds> {
   void _pop_up(int index, bool edit) async {
     ImagePicker picker = ImagePicker();
     bool _pass = true;
+    defaultImg = (await rootBundle.load("./images/noimage.png")).buffer.asUint8List();
+    image = null;
 
     if(!edit) {
       _stateController.clear();
@@ -114,7 +117,6 @@ class _InitState extends State<MyAds> {
       _priceController.text = ads[index].price.toString();
       _telephoneController.text = ads[index].telephone!;
       _descriptionController.text = ads[index].description!;
-      ads[index].photo = await image!.readAsBytes();
     }
 
     var S1 = await showDialog(
@@ -251,14 +253,16 @@ class _InitState extends State<MyAds> {
             child: Text("Próximo")
           ),
         ],
-      );
-    },
-  );
-              if (!_pass) return;
+        );
+      },
+    );
+    
+    if (!_pass) return;
 
-              image = await picker.pickImage(source: ImageSource.gallery);
-              
-              if(image != null && !edit) _saveAd();
+    image = await picker.pickImage(source: ImageSource.gallery);
+
+    if (!edit) _saveAd();
+    else _editAd(index);
   }
 
   Widget listItemCreate(BuildContext context, int index) {
@@ -269,6 +273,7 @@ class _InitState extends State<MyAds> {
     return GestureDetector(
       onTap: () => descriptionRoute(ad),
       child: Card(
+        color: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10), 
         ),
@@ -277,52 +282,52 @@ class _InitState extends State<MyAds> {
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: Column(
           children: [
-            Image(
-              image: img.image, 
+            Container(
+              decoration: BoxDecoration(border: Border.all(width: 5, color: Colors.white)),
+              child: Image(
+              image: img.image,
+              // 
               fit: BoxFit.cover, 
               width: MediaQuery.of(context).size.width, 
               height: MediaQuery.of(context).size.width*0.5,
-            ),
+            )),
             const SizedBox(height: 7,),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-              Text(
+            Text(
                 ad.title!,
                 style: const TextStyle(
-                  fontWeight: FontWeight.w400
+                  color: Colors.black, fontWeight: FontWeight.w400, 
                 ),
-              ),
-              Container(
-                child: Row(children: [
-                  IconButton(
-                icon: const Icon(Icons.edit, color: Colors.green,),
-                tooltip: 'Editar anúncio',
-                onPressed: () async {
-                  _pop_up(index,true);
-                  _editAd(index);
-                }),
-              IconButton(
-                icon: const Icon(Icons.delete, color: Colors.red,),
-                tooltip: 'Deletar anúncio',
-                onPressed: () {
-                  _removeAd(index);
-                },
-        ),
-                ]),
-              ),
-            ],),
+            ),
             const SizedBox(height: 7,),
             Text(
               "R\$"+ad.price.toString(),
               style: TextStyle(
-                color: Colors.purple.shade800, 
+                color: Colors.purple.shade700,  
                 fontWeight: FontWeight.bold
               ),
             ),
             const SizedBox(height: 7,),
-          ],
+            Container(
+                child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  IconButton(
+                icon: const Icon(Icons.edit, color: Colors.purple,),
+                tooltip: 'Editar anúncio',
+                onPressed: () async {
+                  _pop_up(index,true);
+                }),
+              IconButton(
+                icon: const Icon(Icons.delete, color: Colors.purple,),
+                tooltip: 'Deletar anúncio',
+                onPressed: () {
+                  _removeAd(index);
+                },
+            ),
+            ]),
+            ),
+            const SizedBox(height: 7,),
+            ],),
         ),
-      ),
-    );
+      );
   }
 
   @override
@@ -343,7 +348,7 @@ class _InitState extends State<MyAds> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         backgroundColor: Colors.purple,
-        onPressed: () => _pop_up(-1, true)
+        onPressed: () => _pop_up(-1, false)
           ),
           body: 
             Container(
