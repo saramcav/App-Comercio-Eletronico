@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:loja_app/controller/login_controller.dart';
 import 'package:loja_app/screen/sign_up_screen.dart';
 import 'package:loja_app/screen/main_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 
 import '../model/user.dart';
 
@@ -17,9 +15,10 @@ class LoginScreen extends StatefulWidget {
 
 }
 
+//essa tela possui caixas centrais em que a pessoa digita email e senha para realizar login
+//abaixo, existe um botao de cadastro e outro de acesso direto, que a redirecionam as paginas relacionadas
 class _InitState extends State<LoginScreen> {
 
-  LoginStatus _loginStatus = LoginStatus.notSignIn;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   late LoginController controller;
@@ -29,8 +28,9 @@ class _InitState extends State<LoginScreen> {
     controller = LoginController();
   }
 
+  //funcao de mudanca de tela
   mainRoute([User? user]) {
-    Navigator.push(
+    Navigator.pushReplacement(
       context, 
       MaterialPageRoute(
         builder: (context) => MainScreen(user)
@@ -38,12 +38,13 @@ class _InitState extends State<LoginScreen> {
     );
   }
 
+  //essa funcao analisa se existe um usuario com o email e senha digitados nos campos de login
+  //se existe, passa o user para a tela principal, 
+  //senao exibe uma mensagem avisando que o cadastro nao existe 
   void _submit() async {
     try{
       User? user = await controller.getLogin(_emailController.text, _passwordController.text);
       if (user!=null) {
-        savePref(1, user.email, user.password);
-        _loginStatus = LoginStatus.signIn;
         mainRoute(user);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -57,47 +58,18 @@ class _InitState extends State<LoginScreen> {
     }   
   }
 
-  signOut() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-
-    setState(() {
-      preferences.setInt("value", 0);
-      _loginStatus = LoginStatus.notSignIn;
-    });
-  }
-
-  getPref() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-
-    setState(() {
-      value = preferences.getInt("value");
-
-      _loginStatus = value == 1? LoginStatus.signIn : LoginStatus.notSignIn;
-    });
-  }
-
-  savePref(int value, String email, String pass) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-
-    setState(() {
-      preferences.setInt("value", value);
-      preferences.setString("email", email);
-      preferences.setString("pass", pass);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return initWidget();
   }
 
   Widget initWidget() {
-    switch (_loginStatus) {
-      case LoginStatus.notSignIn:
+    
         return Scaffold(
           body: SingleChildScrollView(
             child: Column(
               children: [
+                //caixa que contém o "logo" e o nome do aplicativo
                 Container(
                   height: 250,
                   decoration: BoxDecoration(
@@ -142,6 +114,7 @@ class _InitState extends State<LoginScreen> {
                   ),
                 ),
 
+                //campo para a insercao do email
                 Container(
                   margin: const EdgeInsets.only(left: 20, right: 20, top: 70),
                   padding: const EdgeInsets.only(left: 20, right: 20),
@@ -170,6 +143,7 @@ class _InitState extends State<LoginScreen> {
                   ),
                 ),
 
+                //campo para a insercao da senha
                 Container(
                   margin: const EdgeInsets.only(left: 20, right: 20, top: 20),
                   padding: const EdgeInsets.only(left: 20, right: 20),
@@ -199,6 +173,7 @@ class _InitState extends State<LoginScreen> {
                   ),
                 ),
 
+                //botao para submissao da tentativa de login
                 GestureDetector(
                   onTap: () async => _submit(), 
                   child: Container(
@@ -228,6 +203,7 @@ class _InitState extends State<LoginScreen> {
                   ),
                 ),
 
+                //caixa que contém os botoes de "cadastrar-se" e "acesso direto"
                 Container(
                   height: 250,
                   margin: const EdgeInsets.only(top: 40.0),
@@ -246,6 +222,7 @@ class _InitState extends State<LoginScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        //botao para redirecionamento para a pagina de cadastro
                         GestureDetector(
                           onTap: () {
                             Navigator.push(
@@ -282,6 +259,7 @@ class _InitState extends State<LoginScreen> {
                           ),
                         ),
 
+                        //botao para para redirecionamento sem cadastro para a tela principal
                         GestureDetector(
                           onTap: () {
                             mainRoute();
@@ -320,9 +298,5 @@ class _InitState extends State<LoginScreen> {
             ),
           ),
         );
-    case LoginStatus.signIn:
-      return const Scaffold();
-      //return HomePage(signOut);
-    }
   }
 }

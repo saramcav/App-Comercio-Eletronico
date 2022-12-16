@@ -10,6 +10,8 @@ class SplashScreen extends StatefulWidget {
 
 }
 
+//essa tela e somente uma tela roxa que contem o "logo" do aplicativo
+//ao abri-lo, ela aparece durante 3 segundos para que va para a tela de login/cadastro/acesso direto
 class InitState extends State<SplashScreen> {
 
   @override
@@ -22,6 +24,7 @@ class InitState extends State<SplashScreen> {
     return Timer(const Duration(seconds: 3), loginRoute);
   }
 
+  //funcao de mudanca de tela
   loginRoute() {
     Navigator.push(
       context, 

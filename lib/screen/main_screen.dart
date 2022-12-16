@@ -100,7 +100,7 @@ class _InitState extends State<MainScreen> {
     Image img=ad.getImage(context);
 
     return GestureDetector(
-      onTap: () => descriptionRoute(),
+      onTap: () => descriptionRoute(ad),
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10), 
@@ -218,14 +218,20 @@ class _InitState extends State<MainScreen> {
     return PopupMenuButton(
           itemBuilder: (context){
             return [
-                  const PopupMenuItem<int>(
+                  PopupMenuItem<int>(
                       value: 0,
-                      child: Text("Logar"),
+                      child: ListTile(
+                        leading: Icon(Icons.login, color: Colors.purple.shade800,),
+                        title: const Text("Logar"),
+                      ),
                   ),
 
-                  const PopupMenuItem<int>(
+                  PopupMenuItem<int>(
                       value: 1,
-                      child: Text("Cadastrar"),
+                      child: ListTile(
+                        leading: Icon(Icons.person, color: Colors.purple.shade800,),
+                        title: const Text("Cadastrar"),
+                      ),
                   ),
               ];
           },
@@ -249,7 +255,8 @@ class _InitState extends State<MainScreen> {
         );
   }
 
-  descriptionRoute([Advertisement? advertisement]) {
+  //funcao de mudanca de tela
+  descriptionRoute(Advertisement advertisement) {
     Navigator.push(
       context, 
       MaterialPageRoute(
@@ -266,7 +273,7 @@ class _InitState extends State<MainScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "OLX",
+          "Para Você",
           style: TextStyle(
             fontSize: 20,
             color: Colors.white,

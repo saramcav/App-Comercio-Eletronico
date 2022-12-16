@@ -85,7 +85,7 @@ class _InitState extends State<MyAds> {
     _getAds();
   }
 
-  descriptionRoute([Advertisement? advertisement]) {
+  descriptionRoute(Advertisement advertisement) {
     Navigator.push(
       context, 
       MaterialPageRoute(
@@ -94,152 +94,172 @@ class _InitState extends State<MyAds> {
     );
   }
 
-    void _pop_up(int index, bool edit) async {
-            ImagePicker picker = ImagePicker();
-            bool _pass = true;
+  void _pop_up(int index, bool edit) async {
+    ImagePicker picker = ImagePicker();
+    bool _pass = true;
 
-            if(!edit) {
-            _stateController.clear();
-            _categoryController.clear();
-            _titleController.clear();
-            _priceController.clear();
-            _telephoneController.clear();
-            _descriptionController.clear();
-            }
+    if(!edit) {
+      _stateController.clear();
+      _categoryController.clear();
+      _titleController.clear();
+      _priceController.clear();
+      _telephoneController.clear();
+      _descriptionController.clear();
+    }
 
-            else{
-              _titleController.text = ads[index].title!;
-              _stateController.text = ads[index].state!;
-              _categoryController.text = ads[index].category!;
-              _priceController.text = ads[index].price.toString();
-              _telephoneController.text = ads[index].telephone!;
-              _descriptionController.text = ads[index].description!;
-              ads[index].photo = await image!.readAsBytes();
-            }
+    else{
+      _titleController.text = ads[index].title!;
+      _stateController.text = ads[index].state!;
+      _categoryController.text = ads[index].category!;
+      _priceController.text = ads[index].price.toString();
+      _telephoneController.text = ads[index].telephone!;
+      _descriptionController.text = ads[index].description!;
+      ads[index].photo = await image!.readAsBytes();
+    }
 
-            var S1 = await showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text("Criar anúncio"),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min, 
+    var S1 = await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Criar anúncio"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min, 
                     
-                    children: [
-                      TextField(
-                        controller: _titleController,
-                        autofocus: true,
-                        decoration: const InputDecoration(
-                          labelText: "Título", hintText: "Digite o título"),
-                      ),
-                      TextField(
-                        controller: _descriptionController,
-                        autofocus: true,
-                        decoration: const InputDecoration(
-                          labelText: "Descrição", hintText: "Digite a descrição"),
-                      ),
-                      ],
-                    ), actions: [
-                          TextButton(
-                              onPressed: () {
-                                _pass = false;
-                                Navigator.pop(context);
-                              },
-                              child: Text("Cancelar")),
-                          TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text("Próximo")),
-                        ],);
-                  },
-              );
+            children: [
+              TextField(
+                controller: _titleController,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  labelText: "Título", hintText: "Digite o título"
+                ),
+              ),
+              TextField(
+                controller: _descriptionController,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  labelText: "Descrição", hintText: "Digite a descrição"
+                ),
+              ),
+            ],
+          ), 
+          actions: [
+            TextButton(
+              onPressed: () {
+                _pass = false;
+                Navigator.pop(context);
+              },
+              child: Text("Cancelar")
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("Próximo")
+            ),
+          ],
+        );
+      },
+    );
 
-            if (!_pass) return;
+    if (!_pass) return;
 
-            var S2 = await showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text("Criar anúncio"),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min, 
+    var S2 = await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Criar anúncio"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min, 
                     
-                    children: [
-                      TextField(
-                        controller: _stateController,
-                        autofocus: true,
-                        decoration: const InputDecoration(
-                          labelText: "Estado", hintText: "Digite o estado"),
-                        ),
-                        TextField(
-                        controller: _categoryController,
-                        autofocus: true,
-                        decoration: const InputDecoration(
-                          labelText: "Categoria", hintText: "Digite a categoria"),
-                        ),
-                      ],
-                    ), actions: [
-                          TextButton(
-                              onPressed: () {
-                                _pass = false;
-                                Navigator.pop(context);
-                              },
-                              child: Text("Cancelar")),
-                          TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text("Próximo")),
-                        ],);
-                  },
-              );
+            children: [
+              TextField(
+                controller: _stateController,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  labelText: "Estado", 
+                  hintText: "Digite o estado"
+                ),
+              ),
+              TextField(
+                controller: _categoryController,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  labelText: "Categoria", 
+                  hintText: "Digite a categoria"
+                ),
+              ),
+            ],
+          ), 
+          actions: [
+            TextButton(
+              onPressed: () {
+                _pass = false;
+                Navigator.pop(context);
+              },
+              child: Text("Cancelar")
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("Próximo")
+            ),
+          ],
+        );
+      },
+    );
 
-              if (!_pass) return;
+    if (!_pass) return;
 
-              var S3 = await showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text("Criar anúncio"),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min, 
-                    
-                    children: [
-                        TextField(
-                        controller: _priceController,
-                        autofocus: true,
-                        decoration: const InputDecoration(
-                          labelText: "Preço", hintText: "Digite o preço"),
-                        ),
-                        TextField(
-                        controller: _telephoneController,
-                        autofocus: true,
-                        decoration: const InputDecoration(
-                          labelText: "Telefone", hintText: "Digite o telefone de contato"),
-                        ),
-                      ],
-                    ), actions: [
-                          TextButton(
-                              onPressed: () {
-                                _pass = false;
-                                Navigator.pop(context);
-                              },
-                              child: Text("Cancelar")),
-                          TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text("Próximo")),
-                        ],);
-                  },
-              );
+    var S3 = await showDialog(
+      context: context,
+      builder: (context) {
+      return AlertDialog(
+        title: Text("Criar anúncio"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min, 
+                      
+          children: [
+            TextField(
+              controller: _priceController,
+              autofocus: true,
+              decoration: const InputDecoration(
+                labelText: "Preço", hintText: "Digite o preço"
+              ),
+            ),
+            TextField(
+              controller: _telephoneController,
+              autofocus: true,
+              decoration: const InputDecoration(
+                labelText: "Telefone", hintText: "Digite o telefone de contato"
+              ),
+            ),
+          ],
+        ), 
+        actions: [
+          TextButton(
+            onPressed: () {
+              _pass = false;
+              Navigator.pop(context);
+            },
+            child: Text("Cancelar")
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text("Próximo")
+          ),
+        ],
+      );
+    },
+  );
               if (!_pass) return;
 
               image = await picker.pickImage(source: ImageSource.gallery);
               
               if(image != null && !edit) _saveAd();
-            }
+  }
 
   Widget listItemCreate(BuildContext context, int index) {
     
@@ -247,7 +267,7 @@ class _InitState extends State<MyAds> {
     Image img=ad.getImage(context);
 
     return GestureDetector(
-      onTap: () => descriptionRoute(),
+      onTap: () => descriptionRoute(ad),
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10), 
@@ -264,27 +284,31 @@ class _InitState extends State<MyAds> {
               height: MediaQuery.of(context).size.width*0.5,
             ),
             const SizedBox(height: 7,),
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
               Text(
                 ad.title!,
                 style: const TextStyle(
                   fontWeight: FontWeight.w400
                 ),
               ),
-              IconButton(
-                icon: const Icon(Icons.edit),
+              Container(
+                child: Row(children: [
+                  IconButton(
+                icon: const Icon(Icons.edit, color: Colors.green,),
                 tooltip: 'Editar anúncio',
                 onPressed: () async {
                   _pop_up(index,true);
                   _editAd(index);
                 }),
               IconButton(
-                icon: const Icon(Icons.delete),
+                icon: const Icon(Icons.delete, color: Colors.red,),
                 tooltip: 'Deletar anúncio',
                 onPressed: () {
                   _removeAd(index);
                 },
         ),
+                ]),
+              ),
             ],),
             const SizedBox(height: 7,),
             Text(
@@ -306,7 +330,7 @@ class _InitState extends State<MyAds> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "MEUS ANÚNCIOS",
+          "Meus Anúncios",
           style: TextStyle(
             fontSize: 20,
             color: Colors.white,
