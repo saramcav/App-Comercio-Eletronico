@@ -34,8 +34,13 @@ class _InitState extends State<MainScreen> {
 
   bool initialized=false;
 
+<<<<<<< HEAD
   //funcao para que insere anuncios para que a tela principal nao esteja vazia assim que iniciar
   void _addSomeAds() async {
+=======
+//Função que adiciona alguns anúncios só para não ficar vazio inicialmente
+  void _addSomeAds() async{
+>>>>>>> c54c9fe4fe5ca422be7968904936c05f630fda18
     _db.deleteAds();
 
     final  json = jsonDecode(await DefaultAssetBundle.of(context)
@@ -57,6 +62,7 @@ class _InitState extends State<MainScreen> {
     _getAds();
   }
 
+  //pega os ads do banco de acordo com o filtro escolhido
   void _getAds() async {
     List results = [];
 
@@ -69,7 +75,6 @@ class _InitState extends State<MainScreen> {
     }
 
     else if(!(["Todos", "None"].contains(filters["state"]))){
-      print(filters[0]);
       results = await _db.getAds({
         "state" : filters["state"]
       });
@@ -149,6 +154,7 @@ class _InitState extends State<MainScreen> {
     _getAds();
   }
 
+  // cria os dropButton do filtro
   Widget createDropButton(List<String> options, String title){
     String tag="categ";
 

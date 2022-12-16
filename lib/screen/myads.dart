@@ -34,7 +34,9 @@ class _InitState extends State<MyAds> {
   void _getAds() async {
     List results=[];
 
-    results = await _db.getAds();
+    results = await _db.getAds({
+      "author":widget.user!.name
+    });
     
     ads.clear();
 
@@ -50,8 +52,11 @@ class _InitState extends State<MyAds> {
   void _saveAd() async {
     Uint8List? img_bytes = image==null? defaultImg: await image!.readAsBytes();
 
+    print(widget.user!.name);
+
     Advertisement nova = Advertisement(_titleController.text, _stateController.text, _categoryController.text,
-    double.parse(_priceController.text), _telephoneController.text, _descriptionController.text,"", img_bytes);
+      double.parse(_priceController.text), _telephoneController.text, _descriptionController.text,
+      widget.user!.name, img_bytes);
     
     int result = await _db.insertAd(nova);
   
