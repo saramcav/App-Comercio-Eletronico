@@ -69,27 +69,26 @@ class AdvertisementHelper{
   }
 
 
-  getAds() async {
+  getAds([Map? filters]) async {
     var database = await db;
 
-    String sql = "SELECT * FROM $tableName";
-    List advertisements = await database.rawQuery(sql);
+    String sql="SELECT * FROM $tableName ";
+    String and="";
 
-    return advertisements;
-  }
+    if(filters != null && filters.keys.length>0) {
+      sql+="WHERE ";
+  
+      for(String key in filters.keys){
+        String? entry=filters[key];
+        print(filters);
+        sql+=and+"$key=\"$entry\"";
+        and=" AND ";
+      }
 
-  getFilteredAds([String state="", String categ=""]) async {
-    var database = await db;
+    }
 
-    String sql="";
+    print(sql);
 
-    if(state!="" && categ !="")
-      {sql = "SELECT * FROM $tableName WHERE state=\"$state\" AND category=\"$categ\"";}
-    else if(state!="")
-      {sql = "SELECT * FROM $tableName WHERE state=\"$state\"";}
-    else if(categ!="")
-      {sql = "SELECT * FROM $tableName WHERE category=\"$categ\"";}
-      
     List advertisements = await database.rawQuery(sql);
 
     return advertisements;

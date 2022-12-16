@@ -62,14 +62,25 @@ class _InitState extends State<MainScreen> {
     List results=[];
 
     if(filters.length==2 && !(["Todos", "None"].contains(filters["state"])) && 
-    !(["Todas", "None"].contains(filters["categ"])))
-      {results = await _db.getFilteredAds(filters["state"]!, filters["categ"]!);}
+    !(["Todas", "None"].contains(filters["categ"]))){
+      results = await _db.getAds({
+        "state":filters["state"],
+        "category":filters["categ"]
+      });
+    }
 
-    else if(!(["Todos", "None"].contains(filters["state"])))
-      {results = await _db.getFilteredAds(filters["state"]!);}
+    else if(!(["Todos", "None"].contains(filters["state"]))){
+      print(filters[0]);
+      results = await _db.getAds({
+        "state" :filters["state"]
+      });
+    }
 
-    else if(!(["Todas", "None"].contains(filters["categ"]!)))
-      {results = await _db.getFilteredAds("",filters["categ"]!);}
+    else if(!(["Todas", "None"].contains(filters["categ"]!))){
+      results = await _db.getAds({
+        "category":filters["categ"]
+      });
+    }
 
     else
       {results = await _db.getAds();}
