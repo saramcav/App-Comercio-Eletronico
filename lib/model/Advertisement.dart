@@ -10,6 +10,7 @@ class Advertisement{
   double? price;
   String? telephone;
   String? description;
+  String? author;
   Uint8List? photo;
 
   Advertisement(this.title, this.state, this.category,this.price, this.telephone, this.description, this.photo);

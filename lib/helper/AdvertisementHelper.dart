@@ -60,6 +60,14 @@ class AdvertisementHelper{
 
   }
 
+ deleteAds() async {
+    var database = await db;
+
+    String sql = "DELETE FROM $tableName";
+
+  }
+
+
   getAds() async {
     var database = await db;
 
@@ -93,7 +101,11 @@ class AdvertisementHelper{
     List columnList = await database.rawQuery(sql);
     List<String> values=[];
 
-    for(Map item in columnList) {values.add(item[column]);}
+    for(Map item in columnList) {
+      if(!values.contains(item[column])) {
+        values.add(item[column]);
+      }
+    }
     
     return values;
   }
@@ -101,7 +113,7 @@ class AdvertisementHelper{
   Future<bool> searchByTitle(String title) async {
     var database = await db;
 
-    String sql = "SELECT * FROM $tableName WHERE title=\"$title\"";
+    String sql = "SELECT title FROM $tableName WHERE title=\"$title\"";
     final ad = await database.rawQuery(sql);
 
     return ad.length!=0;

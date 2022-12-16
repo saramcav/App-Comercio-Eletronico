@@ -7,6 +7,7 @@
             "price" : 2000.00,
             "telephone" : "21971164461",
             "description" : "Um terreno muito bom, espaçoso e verdejante.",
+            "author":"system",
             "photo" : "./images/windows.png"
         }, 
         {
@@ -16,7 +17,8 @@
             "price" : 15.00,
             "telephone" : "21971164461",
             "description" : "Rica em nutrientes, especialmente para os patriotas.",
-            "photo" : "./images/abobora.jpg"
+            "author":"system",
+            "photo" : "./images/abobra.jpg"
         }, 
         {
             "title" : "Cenoura redonda",
@@ -25,6 +27,7 @@
             "price" : 5.00,
             "telephone" : "21971164461",
             "description" : "Variação muito saborosa e adocicada da cenoura convencional.",
+            "author":"system",
             "photo" : "./images/cenoura.png"
         },  
         {
@@ -34,6 +37,7 @@
             "price" : 10.00,
             "telephone" : "21971164461",
             "description" : "Previne a anemia, aumenta a imunidade e contibui para a diminuição do colesterol e açúcar.",
+            "author":"system",
             "photo" : "./images/brocolis.png"
         }, 
         {
@@ -43,6 +47,7 @@
             "price" : 70.00,
             "telephone" : "21971164461",
             "description" : "Muito simpático, aguenta o sol muito bem para um pinguim!",
+            "author":"system",
             "photo" : "./images/pinguin.png"
         }
     ]

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:loja_app/screen/login_screen.dart';
 import 'package:loja_app/screen/sign_up_screen.dart';
@@ -32,35 +33,29 @@ class _InitState extends State<MainScreen> {
   List<String> states=[];
   List<String> categories=[];
 
+  bool initialized=false;
+
 //fessôr, essa aqui é pra testar tlgd
-  void _addSomeAds() async {
-    final image = (await rootBundle.load("./images/windows.png"))
-    .buffer.asUint8List();
+  void _addSomeAds() async{
+    _db.deleteAds();
 
-    final image1 = (await rootBundle.load("./images/abobora.jpg"))
-    .buffer.asUint8List();
+    final  json=jsonDecode(await DefaultAssetBundle.of(context)
+      .loadString("lib/initial_advertisements.json"));
 
-    Advertisement ad1=Advertisement("terreno do windows", "RJ", "terreno",
-    2000.0, "21971164461", "é o terreno do windows véi", image);
+    for(Map ad in json["advertisements:"]){
 
-    Advertisement ad2=Advertisement("Abobrinha brasileirinha", "Manaus", "legume",
-    1000000.0, "21971164461", "BRASIIIILLL", image1);
+      if(await _db.searchByTitle(ad["title"])) {continue;}
 
-    if(await _db.searchByTitle("terreno do windows"))
-      {return;}
+      ad["photo"] = (await rootBundle.load(ad["photo"]))
+        .buffer.asUint8List();
+      ad["id"]=null;
 
-    await _db.insertAd(ad1);
-    await _db.insertAd(ad2);
+      Advertisement atual=Advertisement.fromMap(ad);
 
+      await _db.insertAd(atual);
+    }
+    
     _getAds();
-  }
-
-
-// terminar de implementar
-  void _addSomeAdsNew() async{
-    final  json=jsonDecode(await DefaultAssetBundle.of(context).loadString("assets/data.json"));
-
-    print(json);
   }
 
   void _getAds() async {
@@ -150,14 +145,32 @@ class _InitState extends State<MainScreen> {
     if(title=="Estados") tag="state";
 
     return Container(
-      padding: const EdgeInsets.only(left: 25.0, right: 20.0),
+      padding: const EdgeInsets.only(left: 15, right: 15),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors:  [Colors.purple.shade400, Colors.purple.shade600],
+          begin: Alignment.centerLeft,
+          end:  Alignment.centerRight
+        ),
+        borderRadius: BorderRadius.circular(50),
+        boxShadow: [BoxShadow(
+          offset: const Offset(0, 10),
+          blurRadius: 50,
+          color: Colors.purple.shade300
+        )],
+      ),
       child: Row(
         children: [
-          Text(title),
+          Text(title, style: TextStyle(color: Colors.white),),
           const SizedBox(width: 10,),
-          DropdownButton<String>(
+          Theme(
+                  data: Theme.of(context).copyWith(
+                    canvasColor: Colors.purple.shade200,
+                  ),
+                  child: DropdownButton<String>(
+            borderRadius:BorderRadius.circular(10),
             value: filters[tag],
-            icon: const Icon(Icons.arrow_downward),
+            icon: const Icon(Icons.keyboard_arrow_down, color: Colors.white,),
             elevation: 16,
             alignment: Alignment.topCenter,
             style: const TextStyle(color: Colors.deepPurple),
@@ -168,10 +181,10 @@ class _InitState extends State<MainScreen> {
             items: options.map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,
-                child: Text(value),
+                child: Text(value, style: TextStyle(color: Colors.white),),
               );
             }).toList(),
-          ),
+          ),),
         ],
       ),    
     );
@@ -267,7 +280,10 @@ class _InitState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _addSomeAds();
+    if(!initialized){
+      _addSomeAds();
+      initialized=true;
+    }
     _db.getColumn("state");
 
     return Scaffold(
@@ -285,30 +301,29 @@ class _InitState extends State<MainScreen> {
           menu()
         ],
       ),
-      body: Column(
+      body: Stack(
         children: [
-          IntrinsicHeight(
+          Positioned(
+            child:Container(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Expanded(child: createDropButton(states, "Estados")),
-                VerticalDivider(color: Colors.purple.shade800, thickness: 1.5, width: 0,),
+                SizedBox(width: 8,),
                 Expanded(child: createDropButton(categories, "Categorias"))
               ],  
             ),
-          ),
-          Divider(color: Colors.purple.shade800, height: 0,thickness: 1,),
+          )),
           Container(
-            padding: const EdgeInsets.all(10.0),
-            child: Expanded(
-              child: ListView.separated(
+            padding: const EdgeInsets.fromLTRB(10.0,50.0,10.0,10.0),
+            child: ListView.separated(
                 separatorBuilder: (BuildContext context, int index) => const Divider(),
                 shrinkWrap: true,
+                physics: ScrollPhysics(),
                 itemCount: ads.length,
                 itemBuilder: listItemCreate
               ),
             ),
-          ),
         ],
       ),
     );
