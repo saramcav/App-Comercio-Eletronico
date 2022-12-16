@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:loja_app/screen/login_screen.dart';
 import 'package:loja_app/screen/sign_up_screen.dart';
 import 'package:loja_app/screen/description_screen.dart';
+import '../screen/myads.dart';
 import '../helper/AdvertisementHelper.dart';
 import '../model/Advertisement.dart';
 import '../model/user.dart';
 import 'package:flutter/services.dart';
+import 'dart:convert';
 
 class MainScreen extends StatefulWidget {
 
@@ -19,8 +21,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class _InitState extends State<MainScreen> {
-   
-  //TextEditingController _controllerTask = TextEditingController();
   
   List<Advertisement> ads=[];
   Map<String, String> filters={
@@ -55,10 +55,16 @@ class _InitState extends State<MainScreen> {
     _getAds();
   }
 
+
+// terminar de implementar
+  void _addSomeAdsNew() async{
+    final  json=jsonDecode(await DefaultAssetBundle.of(context).loadString("assets/data.json"));
+
+    print(json);
+  }
+
   void _getAds() async {
     List results=[];
-
-    print(filters);
 
     if(filters.length==2 && !(["Todos", "None"].contains(filters["state"])) && 
     !(["Todas", "None"].contains(filters["categ"])))
@@ -84,8 +90,6 @@ class _InitState extends State<MainScreen> {
     states.insert(0, "Todos");
     categories = await _db.getColumn("category");
     categories.insert(0, "Todas");
-
-    print(ads);
 
     setState(() {});
 
@@ -197,6 +201,12 @@ class _InitState extends State<MainScreen> {
           },
           onSelected:(value){
             if(value == 0){
+              Navigator.push(
+                context, 
+                MaterialPageRoute(
+                  builder: (context) => MyAds(widget.user),
+                )
+              );
                 //ir pro meus alucio
             }else if(value == 1){
                 widget.user=null;
