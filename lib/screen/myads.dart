@@ -16,14 +16,18 @@ class MyAds extends StatefulWidget {
 
 }
 
+//essa pagina exibe os anuncios do usuario atual que esta logado
+//nela, ha opcao de editar e criar um anuncio
 class _InitState extends State<MyAds> {
 
   List<Advertisement> ads=[];
   var _db= AdvertisementHelper();
 
+  //imagem que pegamos da galeria
   XFile? image;
+  //utilizamos esse tipo para guardar no bd
   Uint8List? defaultImg;
-
+  
   final TextEditingController _stateController = TextEditingController();
   final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
@@ -31,7 +35,9 @@ class _InitState extends State<MyAds> {
   final TextEditingController _telephoneController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
+  //le o banco de dados, cria instancias de anuncios, guarda-os na lista ads e atualiza a tela
   void _getAds() async {
+    
     List results=[];
 
     results = await _db.getAds({
@@ -49,8 +55,11 @@ class _InitState extends State<MyAds> {
 
   }
 
+  //chama a funcao do bd que insere
+  //caso a imagem seja nula, cria um anuncio com a imagem default
+  //chamada pela insercao e edicao
   void _saveAd() async {
-    Uint8List? img_bytes = image==null? defaultImg: await image!.readAsBytes();
+    Uint8List? img_bytes = image == null? defaultImg : await image!.readAsBytes();
 
     print(widget.user!.name);
 
@@ -63,12 +72,14 @@ class _InitState extends State<MyAds> {
     _getAds();
   }
 
+  //chama a funcao do bd que remove quando clicam no icon
   void _removeAd(int index) async {
       await _db.deleteAd(ads[index].id!);
 
     _getAds();
   }
 
+  //chama a funcao do bd que edita o anuncio
   void _editAd(int index) async {
 
     ads[index].title = _titleController.text;
@@ -90,6 +101,7 @@ class _InitState extends State<MyAds> {
     _getAds();
   }
 
+  //funcao de mudanca de tela
   descriptionRoute(Advertisement advertisement) {
     Navigator.push(
       context, 
@@ -99,12 +111,16 @@ class _InitState extends State<MyAds> {
     );
   }
 
+  //edita ou insere, a depender de onde foi chamada
+  //e acionada quando clicam no floatting button
   void _pop_up(int index, bool edit) async {
     ImagePicker picker = ImagePicker();
     bool _pass = true;
     defaultImg = (await rootBundle.load("./images/noimage.png")).buffer.asUint8List();
     image = null;
+    String? alertTitle;
 
+    //limpando controllers para a insercao
     if(!edit) {
       _stateController.clear();
       _categoryController.clear();
@@ -112,8 +128,10 @@ class _InitState extends State<MyAds> {
       _priceController.clear();
       _telephoneController.clear();
       _descriptionController.clear();
+      alertTitle = "Crie o anúncio";
     }
 
+    //salvando dadosa atuais para a edicao
     else{
       _titleController.text = ads[index].title!;
       _stateController.text = ads[index].state!;
@@ -121,142 +139,116 @@ class _InitState extends State<MyAds> {
       _priceController.text = ads[index].price.toString();
       _telephoneController.text = ads[index].telephone!;
       _descriptionController.text = ads[index].description!;
+      alertTitle = "Edite o anúncio";
     }
 
-    var S1 = await showDialog(
+    //showdialog em que a pessoa insere os novos dados do anuncio (nome, titulo, etc)
+    var sd = await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("Criar anúncio"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min, 
-                    
-            children: [
-              TextField(
-                controller: _titleController,
+          title: Text(
+            alertTitle!,
+            style: TextStyle(
+              color: Colors.purple,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10))
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,        
+              children: [
+                TextField(
+                  controller: _titleController,
+                  autofocus: true,
+                  cursorColor: Colors.purple,
+                  maxLength: 50,
+                  decoration: const InputDecoration(
+                    labelText: "Título", 
+                    hintText: "Digite o título"
+                  ),
+                ),
+                TextField(
+                  controller: _descriptionController,
+                  maxLength: 200,
+                  cursorColor: Colors.purple,
+                  autofocus: true,
+                  decoration: const InputDecoration(
+                    labelText: "Descrição", 
+                    hintText: "Digite a descrição"
+                  ),
+                ),
+                TextField(
+                  controller: _stateController,
+                  autofocus: true,
+                  maxLength: 2,
+                  cursorColor: Colors.purple,
+                  decoration: const InputDecoration(
+                    labelText: "Estado", 
+                    hintText: "Digite uma Sigla",
+                  ),
+                ),
+                TextField(
+                  controller: _categoryController,
+                  maxLength: 20,
+                  autofocus: true,
+                  cursorColor: Colors.purple,
+                  decoration: const InputDecoration(
+                    labelText: "Categoria", 
+                    hintText: "Digite a categoria"
+                  ),
+                ),
+                TextField(
+                controller: _priceController,
                 autofocus: true,
+                cursorColor: Colors.purple,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                maxLength: 20,
                 decoration: const InputDecoration(
-                  labelText: "Título", hintText: "Digite o título"
+                  labelText: "Preço", 
+                  hintText: "Digite o preço"
                 ),
               ),
               TextField(
-                controller: _descriptionController,
+                controller: _telephoneController,
                 autofocus: true,
+                maxLength: 11,
+                cursorColor: Colors.purple,
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
                 decoration: const InputDecoration(
-                  labelText: "Descrição", hintText: "Digite a descrição"
+                  hoverColor: Colors.purple,
+                  labelText: "Telefone", hintText: "Digite o telefone de contato"
                 ),
               ),
-            ],
-          ), 
+              ],
+            ), 
+          ),
           actions: [
             TextButton(
               onPressed: () {
                 _pass = false;
                 Navigator.pop(context);
               },
-              child: Text("Cancelar")
+              child: Text(
+                "Cancelar",
+                style: TextStyle(color: Colors.purple),
+      
+              ),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text("Próximo")
-            ),
-          ],
-        );
-      },
-    );
-
-    if (!_pass) return;
-
-    var S2 = await showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text("Criar anúncio"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min, 
-                    
-            children: [
-              TextField(
-                controller: _stateController,
-                autofocus: true,
-                decoration: const InputDecoration(
-                  labelText: "Estado", 
-                  hintText: "Digite o estado"
-                ),
-              ),
-              TextField(
-                controller: _categoryController,
-                autofocus: true,
-                decoration: const InputDecoration(
-                  labelText: "Categoria", 
-                  hintText: "Digite a categoria"
-                ),
-              ),
-            ],
-          ), 
-          actions: [
-            TextButton(
-              onPressed: () {
-                _pass = false;
-                Navigator.pop(context);
-              },
-              child: Text("Cancelar")
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text("Próximo")
-            ),
-          ],
-        );
-      },
-    );
-
-    if (!_pass) return;
-
-    var S3 = await showDialog(
-      context: context,
-      builder: (context) {
-      return AlertDialog(
-        title: Text("Criar anúncio"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min, 
-                      
-          children: [
-            TextField(
-              controller: _priceController,
-              autofocus: true,
-              decoration: const InputDecoration(
-                labelText: "Preço", hintText: "Digite o preço"
-              ),
-            ),
-            TextField(
-              controller: _telephoneController,
-              autofocus: true,
-              decoration: const InputDecoration(
-                labelText: "Telefone", hintText: "Digite o telefone de contato"
+              child: Text(
+                "Escolher imagem",
+                style: TextStyle(color: Colors.purple),
               ),
             ),
           ],
-        ), 
-        actions: [
-          TextButton(
-            onPressed: () {
-              _pass = false;
-              Navigator.pop(context);
-            },
-            child: Text("Cancelar")
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text("Próximo")
-          ),
-        ],
         );
       },
     );
@@ -269,11 +261,15 @@ class _InitState extends State<MyAds> {
     else _editAd(index);
   }
 
+  //cria cards para cada anuncio que contem foto, nome e preco
   Widget listItemCreate(BuildContext context, int index) {
     
-    Advertisement ad=ads[index];
-    Image img=ad.getImage(context);
+    Advertisement ad = ads[index];
+    Image img = ad.getImage(context);
 
+    //ao clicar em algum card, sera redirecionado para a tela de descricao,
+    //passando o anuncio referente ao index clicado
+    //assim o usuario visualizara o proprio anuncio  
     return GestureDetector(
       onTap: () => descriptionRoute(ad),
       child: Card(
@@ -287,7 +283,11 @@ class _InitState extends State<MyAds> {
         child: Column(
           children: [
             Container(
-              decoration: BoxDecoration(border: Border.all(width: 5, color: Colors.white)),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  width: 5, 
+                  color: Colors.white)
+              ),
               child: Image(
               image: img.image,
               // 
@@ -311,16 +311,17 @@ class _InitState extends State<MyAds> {
               ),
             ),
             const SizedBox(height: 7,),
+            //icones de botoes que chamam a funcao de editar ou deletar
             Container(
                 child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   IconButton(
-                icon: const Icon(Icons.edit, color: Colors.purple,),
+                icon: const Icon(Icons.edit, color: Colors.green,),
                 tooltip: 'Editar anúncio',
                 onPressed: () async {
                   _pop_up(index,true);
                 }),
               IconButton(
-                icon: const Icon(Icons.delete, color: Colors.purple,),
+                icon: const Icon(Icons.delete, color: Colors.red,),
                 tooltip: 'Deletar anúncio',
                 onPressed: () {
                   _removeAd(index);
@@ -350,6 +351,7 @@ class _InitState extends State<MyAds> {
         backgroundColor: Colors.purple.shade700,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      //botao que adiciona um anuncio
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         backgroundColor: Colors.purple,

@@ -3,6 +3,7 @@ import 'package:sqflite/sqflite.dart';
 
 import '../model/Advertisement.dart';
 
+//essa classe cria apenas uma instancia do bd relacionado aos anuncios
 class AdvertisementHelper{
   static final _advertisementHelper = AdvertisementHelper.internal();
   static Database? _db;
@@ -52,7 +53,8 @@ class AdvertisementHelper{
     return db;
   }
 
-  Future<int> insertAd(Advertisement advertisement) async{
+  //insere um anuncio 
+  Future<int> insertAd(Advertisement advertisement) async {
     var database = await db;
     
     int result = await database.insert(tableName, advertisement.toMap());
@@ -69,6 +71,7 @@ class AdvertisementHelper{
   }
 
 
+  //retorna os anuncios
   getAds([Map? filters]) async {
     var database = await db;
 

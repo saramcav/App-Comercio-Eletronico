@@ -308,7 +308,7 @@ class _InitState extends State<MainScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Para Você",
+          "Anúncios",
           style: TextStyle(
             fontSize: 20,
             color: Colors.white,
@@ -325,15 +325,16 @@ class _InitState extends State<MainScreen> {
           Positioned(
             child: Container(
               padding: EdgeInsets.all(10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(child: createDropButton(states, "Estados")),
-                SizedBox(width: 8,),
-                Expanded(child: createDropButton(categories, "Categorias"))
-              ],  
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(child: createDropButton(states, "Estados")),
+                  SizedBox(width: 8,),
+                  Expanded(child: createDropButton(categories, "Categorias"))
+                ],  
+              ),
             ),
-          ),),
+          ),
           Container(
             padding: const EdgeInsets.fromLTRB(10.0, 65.0,10.0,10.0),
             child: ListView.separated(

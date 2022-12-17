@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+//classe que contem os atributos do usuario
+//possui funcoes de codificar e decodificar seus atributos
 class User {
   final int? id;
   final String name;

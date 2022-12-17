@@ -39,7 +39,7 @@ class LoginController {
       return User.fromMap(res.first);
     }
     
-    return null;//User(id: -1, name: "", email: "", password: "");
+    return null;
   }
 
   //retorna a lista de todos usuarios

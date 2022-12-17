@@ -93,7 +93,7 @@ class _InitState extends State<DescriptionScreen> {
                     ),
                     SizedBox(height: 10.0),
 
-                     //exibindo caixa que contem categoria, estado, o preco e o vendedor do anuncio
+                     //exibindo caixa que contem categoria, estado e o vendedor do anuncio
                     Card(
                       margin: EdgeInsets.symmetric(horizontal: 20.0,vertical: 5.0),
                       clipBehavior: Clip.antiAlias,
@@ -154,28 +154,6 @@ class _InitState extends State<DescriptionScreen> {
                                 ],
                               ),
                             ),
-                            
-                            //coluna do preco
-                            Expanded(
-                              child: Column(
-                                children: <Widget>[
-                                  Text(
-                                    "Preço",
-                                    style: TextStyle(
-                                      color:Colors.purple,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(height: 5.0,),
-                                  Text(
-                                    "${widget.advertisement.price}",
-                                    style: TextStyle(
-                                      color: Colors.grey.shade700,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
 
                             //coluna do vendedor 
                             Expanded(
@@ -207,20 +185,32 @@ class _InitState extends State<DescriptionScreen> {
               ),
             ),
           ),
-
+          SizedBox(height: 20,),
+          
+          //exibindo o preco
+          Text(
+            "R\$ "+widget.advertisement.price.toString(),
+            style: TextStyle(
+              color: Colors.purple,
+              fontWeight: FontWeight.bold,
+              fontSize: 21
+            ),
+          ),
+          
           //caixa que contem a descricao do anuncio
           Container(
-            padding: const EdgeInsets.only(left: 35, right: 35, top: 30),
+            padding: const EdgeInsets.only(left: 40, right: 40, top: 30),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  "Descrição:",
+                  "Descrição",
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.purple,
                     fontStyle: FontStyle.normal,
-                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 17,
                   ),
                 ),
                 SizedBox(height: 15,),

@@ -2,6 +2,8 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
+//classe que contem os atributos do anuncio
+//possui funcoes de codificar e decodificar seus atributos
 class Advertisement{
   int? id;
   String? title;
