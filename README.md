@@ -1,6 +1,6 @@
 # App Comércio Eletrônico
 
-Este repositório contém o projeto final da disciplina de Laboratório de Dispositivos Móveis, um aplicativo de **Loja de Anúncios** desenvolvido em Flutter. O app permite que usuários cadastrados criem, editem, removam e pesquisem anúncios por categoria e região.
+Este repositório contém o projeto final da disciplina de Laboratório de Dispositivos Móveis, um aplicativo de **Loja de Anúncios** desenvolvido em Dart junto ao Flutter. O app permite que usuários cadastrados criem, editem, removam e pesquisem anúncios por categoria e região.
 
 ## Funcionalidades
 
