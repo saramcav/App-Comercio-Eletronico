@@ -47,13 +47,13 @@ Armazena os anúncios cadastrados no sistema.
 
 ## Imagens do Aplicativo
 
-<div style="display: flex; justify-content: space-around;">
+<div style="display: flex; justify-content: space-between; gap: 20px;">
   <img src="imagens_readme/main_screen.png" width="30%" />
   <img src="imagens_readme/sign_up_screen.png" width="30%" />
   <img src="imagens_readme/login_screen.png" width="30%" />
 </div>
 
-<div style="display: flex; justify-content: space-around;">
+<div style="display: flex; justify-content: space-between; gap: 20px; margin-top: 20px;">
   <img src="imagens_readme/description_screen.jpg" width="23%" />
   <img src="imagens_readme/my_ads_screen.jpg" width="23%" />
   <img src="imagens_readme/my_ads_dialog.jpg" width="23%" />
