@@ -47,12 +47,12 @@ Armazena os anúncios cadastrados no sistema.
 
 ## Imagens do Aplicativo
 
-![Tela Principal](imagens_readme/main_screen.png)
-![Tela de Cadastro](imagens_readme/sign_up_screen.png)
-![Tela de Login](imagens_readme/login_screen.png)
-![Tela de Descrição](imagens_readme/description_screen.jpg)
-![Tela Meus Anúncios](imagens_readme/my_ads_screen.jpg)
-![Diálogo Meus Anúncios](imagens_readme/my_ads_dialog.jpg)
+<img src="imagens_readme/main_screen.png" width="50%" />
+<img src="imagens_readme/sign_up_screen.png" width="50%" />
+<img src="imagens_readme/login_screen.png" width="50%" />
+<img src="imagens_readme/description_screen.jpg" width="30%" />
+<img src="imagens_readme/my_ads_screen.jpg" width="30%" />
+<img src="imagens_readme/my_ads_dialog.jpg" width="30%" />
 
 ## Colaboradores
 
