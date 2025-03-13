@@ -45,6 +45,15 @@ Armazena os anúncios cadastrados no sistema.
 - `description`: Descrição do anúncio.
 - `photo`: Imagem associada ao anúncio.
 
+## Imagens do Aplicativo
+
+- Tela Principal: ![Tela Principal](imagens_readme/main_screen.png)
+- Tela de Cadastro: ![Tela de Cadastro](imagens_readme/sign_up_screen.png)
+- Tela de Login: ![Tela de Login](imagens_readme/login_screen.png)
+- Tela de Descrição do Anúncio: ![Tela de Descrição](imagens_readme/description_screen.jpg)
+- Tela Meus Anúncios: ![Tela Meus Anúncios](imagens_readme/my_ads_screen.jpg)
+- Diálogo Meus Anúncios: ![Diálogo Meus Anúncios](imagens_readme/my_ads_dialog.jpg)
+
 ## Colaboradores
 
 - Raphael Carvalho
